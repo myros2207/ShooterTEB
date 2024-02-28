@@ -6,6 +6,7 @@ public class Basher : MonoBehaviour
 {
     GameObject player;
     // Start is called before the first frame update
+    public float walkSpeed = 2f;
     void Start()
     {
         player = GameObject.FindGameObjectWithTag("Player");
