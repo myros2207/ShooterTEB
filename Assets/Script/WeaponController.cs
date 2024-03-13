@@ -54,7 +54,7 @@ public class WeaponController : MonoBehaviour
 
 
 
-        Transform target;
+        Transform target = null;
 
         float targetDistance = Mathf.Infinity;
 
