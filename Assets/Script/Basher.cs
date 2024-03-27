@@ -5,18 +5,35 @@ using UnityEngine;
 public class Basher : MonoBehaviour
 {
     GameObject player;
-    // Start is called before the first frame update
-    public float walkSpeed = 2f;
+
+    public float walkSpeed = 1f;
+
     void Start()
     {
         player = GameObject.FindGameObjectWithTag("Player");
     }
 
-    // Update is called once per frame
     void Update()
     {
+       
         transform.LookAt(player.transform.position);
+       
+        transform.position += transform.forward * Time.deltaTime * walkSpeed;
+    }
+    private void OnCollisionEnter(Collision collision)
+    {
+      
+        GameObject projectile = collision.gameObject;
+        Debug.Log(projectile);
+      
+        if (projectile.CompareTag("PlayerProjectile"))
+        {
+           
+            Destroy(projectile);
 
-        transform.position += transform.forward * Time.deltaTime;
+            
+            Destroy(transform.gameObject);
+        }
+       
     }
 }

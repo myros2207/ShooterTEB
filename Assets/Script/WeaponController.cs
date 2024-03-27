@@ -1,86 +1,141 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class WeaponController : MonoBehaviour
 {
-    // Start is called before the first frame update
-
+   
     public float range = 10f;
 
+   
     Transform player;
+
+   
+    public GameObject projectilePrefab;
+
+   
+    Transform projectileSpawn;
+
+  
+    public float rateOfFire = 1;
+   
+    float timeSinceLastFire = 0;
+
+   
+    public float projectileForce = 20;
+
+   
     void Start()
     {
-        player = GameObject.FindWithTag("Playuer").transform;
+       
+        player = GameObject.FindWithTag("Player").transform;
+
+       
+        projectileSpawn = transform.Find("ProjectileSpawn").transform;
     }
 
     // Update is called once per frame
     void Update()
     {
-       
-       Transform target = TagTargeter("Enemy");
-        if (target != transform) {
-
+        Transform target = TagTargeter("Enemy");
+        if (target != transform)
+        {
+           
             transform.LookAt(target.position + Vector3.up);
-        }
-     //   Debug.Log("Count " + tra.Length);
-    }
 
+           
+           
+            if (timeSinceLastFire > rateOfFire)
+            {
+               
+                GameObject projectile = Instantiate(projectilePrefab, projectileSpawn.position, Quaternion.identity);
+
+
+              
+                Rigidbody projectileRB = projectile.GetComponent<Rigidbody>();
+               
+                projectileRB.AddForce(projectileSpawn.transform.forward * projectileForce, ForceMode.VelocityChange);
+
+              
+                timeSinceLastFire = 0;
+
+               
+                Destroy(projectile, 5);
+            }
+            else
+            {
+                timeSinceLastFire += Time.deltaTime;
+            }
+        }
+
+    }
     Transform TagTargeter(string tag)
     {
+       
         GameObject[] targets = GameObject.FindGameObjectsWithTag(tag);
 
-        Transform clossestTarget = transform;
-
+       
+        Transform closestTarget = transform;
         float closestDistance = Mathf.Infinity;
 
         foreach (GameObject target in targets)
         {
-            Vector3 diference = target.transform.position - player.position;
-            float distance = diference.magnitude;
+           
+            Vector3 difference = target.transform.position - player.position;
+           
+            float distance = difference.magnitude;
 
-        if (distance < closestDistance && distance < range)
+            if (distance < closestDistance && distance < range)
             {
-                clossestTarget = target.transform;
-
+                closestTarget = target.transform;
+                closestDistance = distance;
             }
         }
-        return clossestTarget;
+        return closestTarget;
     }
 
-    Transform PoleTarget()
+    Transform LegeacyTargeter()
     {
-        Collider[] collidersInRage = Physics.OverlapSphere(transform.position, range);
+       
+        Collider[] collidersInRange = Physics.OverlapSphere(transform.position, range);
 
+        
 
-
-        Transform target = null;
-
+        Transform target = transform;
         float targetDistance = Mathf.Infinity;
 
-        foreach (Collider colider in collidersInRage)
+        foreach (Collider collider in collidersInRange)
         {
+           
+            GameObject model = collider.gameObject;
 
-            GameObject model = colider.gameObject;
-
-            GameObject enemy = model.transform.parent.gameObject;
-
-
-            if (enemy.CompareTag("Enemy"))
+            if (model.transform.parent != null)
             {
+             
+                GameObject enemy = model.transform.parent.gameObject;
 
-                Vector3 diference = player.position - enemy.transform.position;
-
-                float distance = diference.magnitude;
-
-                if (distance < targetDistance)
+              
+                if (enemy.CompareTag("Enemy"))
                 {
-
-                    target = enemy.transform;
-                    targetDistance = distance;
+               
+                    Vector3 diference = player.position - enemy.transform.position;
+                   
+                    float distance = diference.magnitude;
+                    if (distance < targetDistance)
+                    {
+                    
+                        target = enemy.transform;
+                        targetDistance = distance;
+                    }
                 }
             }
+
+
         }
+
+       
+
         return target;
     }
 }
