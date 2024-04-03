@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 
 public class LevelManager : MonoBehaviour
@@ -7,7 +8,7 @@ public class LevelManager : MonoBehaviour
     Transform player;
 
    
-    public GameObject basherPrefab;
+    
 
     
     public float spawnInterval = 1;
@@ -15,8 +16,25 @@ public class LevelManager : MonoBehaviour
    
     float timeSinceSpawn;
 
+    int points = 0;
+
+  
    
     float spawnDistance = 30;
+
+
+    public GameObject basherPrefab;
+
+    public GameObject pointsCounter;
+
+    public GameObject timeCounter;
+
+    public GameObject gameOverScreen;
+
+    //czas do koñca poziomu
+    public float levelTime = 60f;
+
+
 
     // Start is called before the first frame update
     void Start()
@@ -61,8 +79,44 @@ public class LevelManager : MonoBehaviour
 
         }
 
-      
+        if (levelTime < 0)
+        {
+            GameOver();
+        }
+        else
+        {
+            levelTime -= Time.deltaTime;
+            UpdateUI();
+        }
 
+    }
+     public void AddPoints (int amount)
+    {
+        points += amount;
+    }
+    private void UpdateUI () {
+
+        pointsCounter.GetComponent<TextMeshProUGUI>().text = "Punkty: " + points.ToString();
+
+    }
+    public void GameOver()
+    {
+        //wy³¹cz sterowanie gracza
+        player.GetComponent<PlayerControl>().enabled = false;
+        player.transform.Find("MainTurret").GetComponent<WeaponController>().enabled = false;
+
+        //wylacz bashery
+        GameObject[] enemyList = GameObject.FindGameObjectsWithTag("Enemy");
+        foreach (GameObject basher in enemyList)
+        {
+            basher.GetComponent<Basher>().enabled = false;
+        }
+
+        //wyswietl poprawnie wynik na ekranie koñcowym
+        gameOverScreen.transform.Find("FinalScoreText").GetComponent<TextMeshProUGUI>().text = "Wynik koñcowy: " + points.ToString();
+
+        //poka¿ ekran koñca gry
+        gameOverScreen.SetActive(true);
 
     }
 }

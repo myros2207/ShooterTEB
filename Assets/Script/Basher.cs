@@ -8,9 +8,17 @@ public class Basher : MonoBehaviour
 
     public float walkSpeed = 1f;
 
+
+    GameObject levelManager;
+
+    bool hasBeenHit = false;
+
+
     void Start()
     {
         player = GameObject.FindGameObjectWithTag("Player");
+
+        levelManager = GameObject.Find("LevelManager");
     }
 
     void Update()
@@ -22,17 +30,24 @@ public class Basher : MonoBehaviour
     }
     private void OnCollisionEnter(Collision collision)
     {
-      
+        if (hasBeenHit) { return; }
+
+
         GameObject projectile = collision.gameObject;
-        Debug.Log(projectile);
+
+         Debug.Log(projectile);
       
         if (projectile.CompareTag("PlayerProjectile"))
         {
-           
+            hasBeenHit = true;
+
+            levelManager.GetComponent<LevelManager>().AddPoints(1);
+
             Destroy(projectile);
 
-            
             Destroy(transform.gameObject);
+
+
         }
        
     }
