@@ -18,36 +18,48 @@ public class Basher : MonoBehaviour
     {
         player = GameObject.FindGameObjectWithTag("Player");
 
+
+
         levelManager = GameObject.Find("LevelManager");
     }
 
     void Update()
     {
+     
        
         transform.LookAt(player.transform.position);
-       
+
         transform.position += transform.forward * Time.deltaTime * walkSpeed;
+
+        
+
     }
     private void OnCollisionEnter(Collision collision)
     {
         if (hasBeenHit) { return; }
 
-
         GameObject projectile = collision.gameObject;
 
-         Debug.Log(projectile);
-      
+        Debug.Log(projectile + "test2123");
+
         if (projectile.CompareTag("PlayerProjectile"))
         {
+
             hasBeenHit = true;
 
             levelManager.GetComponent<LevelManager>().AddPoints(1);
 
+;
             Destroy(projectile);
 
             Destroy(transform.gameObject);
 
 
+        }
+        if (hasBeenHit)
+        {
+      
+           /* transform.GetComponent<AudioSource>().Play();*/
         }
        
     }

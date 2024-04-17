@@ -31,6 +31,7 @@ public class WeaponController : MonoBehaviour
        
         player = GameObject.FindWithTag("Player").transform;
 
+
        
         projectileSpawn = transform.Find("ProjectileSpawn").transform;
     }
@@ -44,15 +45,19 @@ public class WeaponController : MonoBehaviour
            
             transform.LookAt(target.position + Vector3.up);
 
-           
-           
+
             if (timeSinceLastFire > rateOfFire)
             {
-               
+
+
+
                 GameObject projectile = Instantiate(projectilePrefab, projectileSpawn.position, Quaternion.identity);
 
+                target.GetComponent<AudioSource>().Play();
+                transform.GetComponent<AudioSource>().Play();
 
-              
+
+
                 Rigidbody projectileRB = projectile.GetComponent<Rigidbody>();
                
                 projectileRB.AddForce(projectileSpawn.transform.forward * projectileForce, ForceMode.VelocityChange);
@@ -65,6 +70,7 @@ public class WeaponController : MonoBehaviour
             }
             else
             {
+
                 timeSinceLastFire += Time.deltaTime;
             }
         }
