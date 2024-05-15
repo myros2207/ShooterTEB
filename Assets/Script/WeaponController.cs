@@ -53,7 +53,6 @@ public class WeaponController : MonoBehaviour
 
                 GameObject projectile = Instantiate(projectilePrefab, projectileSpawn.position, Quaternion.identity);
 
-                target.GetComponent<AudioSource>().Play();
                 transform.GetComponent<AudioSource>().Play();
 
 

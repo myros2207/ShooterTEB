@@ -40,11 +40,11 @@ public class Basher : MonoBehaviour
 
         GameObject projectile = collision.gameObject;
 
-        Debug.Log(projectile + "test2123");
 
         if (projectile.CompareTag("PlayerProjectile"))
         {
 
+            GetComponent<AudioSource>().Play();
             hasBeenHit = true;
 
             levelManager.GetComponent<LevelManager>().AddPoints(1);
